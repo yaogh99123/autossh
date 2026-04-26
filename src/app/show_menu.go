@@ -28,6 +28,13 @@ func init() {
 		},
 	}
 
+	// 初始化全局 operations 字典
+	for _, row := range menuMap {
+		for _, op := range row {
+			operations[op.Key] = op
+		}
+	}
+
 	// 注册隐藏的/快捷指令操作
 	operations["s"] = Operation{Key: "s", Label: "搜索", Process: handleSearch}
 	operations["menu"] = Operation{Key: "menu", Label: "菜单", Process: handleMenu}

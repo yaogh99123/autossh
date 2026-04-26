@@ -3,6 +3,8 @@ package app
 import (
 	"flag"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 var (
@@ -56,6 +58,14 @@ func init() {
 }
 
 func Run() {
+	// 监听系统信号，确保 Ctrl+C 始终有效
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-sigChan
+		os.Exit(0)
+	}()
+
 	if v {
 		showVersion()
 	} else if h {
