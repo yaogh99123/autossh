@@ -15,9 +15,6 @@ const (
 
 var currentLang = LangEN
 
-
-
-// dicts 聚合所有语言包
 var dicts = map[Language]map[string]string{
 	LangEN: enUS,
 	LangZH: zhCN,
@@ -35,17 +32,16 @@ func detectLanguage() {
 	}
 
 	langEnv = strings.ToLower(langEnv)
-	// 判断是否包含中文特征
 	if strings.Contains(langEnv, "zh_cn") || strings.Contains(langEnv, "zh-cn") ||
 		strings.Contains(langEnv, "zh_tw") || strings.Contains(langEnv, "zh-tw") ||
 		strings.Contains(langEnv, "zh_hk") {
 		currentLang = LangZH
 	} else {
-		currentLang = LangEN // 默认 Fallback 到英文
+		currentLang = LangEN
 	}
 }
 
-// SetLanguage 允许通过配置文件或命令行强制覆盖系统语言
+// SetLanguage
 func SetLanguage(lang string) {
 	lang = strings.ToLower(lang)
 	if strings.HasPrefix(lang, "zh") {
@@ -64,17 +60,14 @@ func GetCurrentLang() Language {
 func T(key string, args ...interface{}) string {
 	dict, ok := dicts[currentLang]
 	if !ok {
-		// 防御性编程，如果当前语言字典不存在，回退到英文
 		dict = dicts[LangEN]
 	}
 
 	format, ok := dict[key]
 	if !ok {
-		// 如果翻译键不存在，为了防止完全无输出，直接返回 key 本身作为 Fallback
 		format = key
 	}
 
-	// 如果传入了参数，则执行格式化插值
 	if len(args) > 0 {
 		return fmt.Sprintf(format, args...)
 	}
