@@ -373,7 +373,18 @@ func (server *Server) startKeepAliveLoop(session *ssh.Session) chan struct{} {
 						utils.Logger.Category("server").Error("keepAliveLoop fail", err)
 					}
 
-					t := time.Duration(server.Options["ServerAliveInterval"].(float64))
+					var interval int
+					switch v := server.Options["ServerAliveInterval"].(type) {
+					case int:
+						interval = v
+					case float64:
+						interval = int(v)
+					case int64:
+						interval = int(v)
+					default:
+						interval = 30
+					}
+					t := time.Duration(interval)
 					time.Sleep(time.Second * t)
 				} else {
 					return
