@@ -75,9 +75,9 @@ func (server *Server) FormatPrint(flag string, ShowDetail bool) string {
 	}
 
 	if ShowDetail {
-		return " [" + flag + alias + "]" + "\t" + server.Name + " [" + server.User + "@" + server.Ip + "]"
+		return " " + utils.Colored("["+flag+alias+"]", utils.ColorCyan) + "\t" + server.Name + " [" + server.User + "@" + server.Ip + "]"
 	} else {
-		return " [" + flag + alias + "]" + "\t" + server.Name
+		return " " + utils.Colored("["+flag+alias+"]", utils.ColorCyan) + "\t" + server.Name
 	}
 }
 

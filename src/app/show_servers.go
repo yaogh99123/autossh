@@ -38,7 +38,7 @@ func showServers(configFile string) {
 // 显示服务
 func show(cfg *Config) {
 	maxlen := separatorLength(*cfg)
-	utils.Infoln(utils.FormatSeparator(" 欢迎使用 Auto SSH ", "=", maxlen))
+	utils.Blueln(utils.FormatSeparator(" 欢迎使用 Auto SSH ", "=", maxlen))
 	for i, server := range cfg.Servers {
 		utils.Logln(server.FormatPrint(strconv.Itoa(i+1), cfg.ShowDetail))
 	}
@@ -55,7 +55,7 @@ func show(cfg *Config) {
 			collapseNotice = "[" + group.Prefix + " ↑]"
 		}
 
-		utils.Infoln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
+		utils.Yellowln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
 		if !group.Collapse {
 			for i, server := range group.Servers {
 				utils.Logln(server.FormatPrint(group.Prefix+strconv.Itoa(i+1), cfg.ShowDetail))
@@ -63,12 +63,12 @@ func show(cfg *Config) {
 		}
 	}
 
-	utils.Infoln(utils.FormatSeparator("", "=", maxlen))
+	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
 
 	showMenu()
 
-	utils.Infoln(utils.FormatSeparator("", "=", maxlen))
-	utils.Info("请输入序号或操作: ")
+	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
+	utils.Cyanln("请输入序号或操作: ")
 }
 
 // 计算分隔符长度

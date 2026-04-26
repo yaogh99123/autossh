@@ -62,7 +62,7 @@ func showMenu() {
 }
 
 func operationFormat(operation Operation) string {
-	return "[" + operation.Key + "] " + operation.Label
+	return utils.Colored("["+operation.Key+"]", utils.ColorGreen) + " " + operation.Label
 }
 
 func stringPadding(str string, paddingLen int) string {
