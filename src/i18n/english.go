@@ -87,4 +87,14 @@ Commands:
 	"upgrade_err_download":      "Download failed: %v",
 	"upgrade_err_unzip":         "Unzip failed: %v",
 	"upgrade_err_install":       "Installation failed",
+
+	"scan_backup_fail":          "Backup failed",
+	"scan_invalid_input":        "Invalid input, please try again",
+
+	"remove_enter_index":        "Please enter the corresponding index:",
+	"remove_index_not_found":    "Index does not exist",
+
+	"app_flag_c":                "Specify configuration file path",
+	"app_flag_v":                "Version information",
+	"app_flag_h":                "Help information",
 }

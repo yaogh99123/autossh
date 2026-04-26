@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"strings"
 )
@@ -36,7 +37,7 @@ func scanInput(cfg *Config) (loop bool, clear bool, reload bool) {
 	case InputCmdServer:
 		{
 			server := cfg.serverIndex[cmd].server
-			utils.Infoln("你选择了", server.Name)
+			utils.Infoln("\n"+i18n.T("search_selected", server.Name))
 			err := server.Connect()
 			if err != nil {
 				utils.Logger.Error("server connect error ", err)
@@ -50,7 +51,7 @@ func scanInput(cfg *Config) (loop bool, clear bool, reload bool) {
 			group.Collapse = !group.Collapse
 			err := cfg.saveConfig(false)
 			if err != nil {
-				utils.Errorln("备份失败", err)
+				utils.Errorln(i18n.T("scan_backup_fail"), err)
 				loop = false
 				return
 			} else {
@@ -105,7 +106,7 @@ func checkInput(cfg *Config) (cmd string, inputCmd int, extInfo interface{}) {
 			break
 		}
 
-		utils.Errorln("输入有误，请重新输入")
+		utils.Errorln(i18n.T("scan_invalid_input"))
 	}
 
 	return cmd, inputCmd, extInfo

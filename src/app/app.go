@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"flag"
 	"os"
 	"os/signal"
@@ -26,14 +27,14 @@ func init() {
 	home, _ := os.UserHomeDir()
 	c = home + "/.config/autossh/config.yml"
 
-	flag.StringVar(&c, "c", c, "指定配置文件路径")
-	flag.StringVar(&c, "config", c, "指定配置文件路径")
+	flag.StringVar(&c, "c", c, i18n.T("app_flag_c"))
+	flag.StringVar(&c, "config", c, i18n.T("app_flag_c"))
 
-	flag.BoolVar(&v, "v", v, "版本信息")
-	flag.BoolVar(&v, "version", v, "版本信息")
+	flag.BoolVar(&v, "v", v, i18n.T("app_flag_v"))
+	flag.BoolVar(&v, "version", v, i18n.T("app_flag_v"))
 
-	flag.BoolVar(&h, "h", h, "帮助信息")
-	flag.BoolVar(&h, "help", h, "帮助信息")
+	flag.BoolVar(&h, "h", h, i18n.T("app_flag_h"))
+	flag.BoolVar(&h, "help", h, i18n.T("app_flag_h"))
 
 	flag.Usage = usage
 	flag.Parse()

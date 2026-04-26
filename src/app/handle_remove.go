@@ -1,13 +1,14 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"fmt"
 	"io"
 )
 
 func handleRemove(cfg *Config, args []string) error {
-	utils.Info("请输入相应序号：")
+	utils.Info(i18n.T("remove_enter_index"))
 
 	id := ""
 	_, err := fmt.Scanln(&id)
@@ -17,7 +18,7 @@ func handleRemove(cfg *Config, args []string) error {
 
 	serverIndex, ok := cfg.serverIndex[id]
 	if !ok {
-		utils.Errorln("序号不存在")
+		utils.Errorln(i18n.T("remove_index_not_found"))
 		return handleRemove(cfg, args)
 	}
 

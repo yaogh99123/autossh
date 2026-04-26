@@ -87,4 +87,14 @@ Commands:
 	"upgrade_err_download":      "下载失败：%v",
 	"upgrade_err_unzip":         "解压缩失败：%v",
 	"upgrade_err_install":       "安装失败",
+
+	"scan_backup_fail":          "备份失败",
+	"scan_invalid_input":        "输入有误，请重新输入",
+
+	"remove_enter_index":        "请输入相应序号：",
+	"remove_index_not_found":    "序号不存在",
+
+	"app_flag_c":                "指定配置文件路径",
+	"app_flag_v":                "版本信息",
+	"app_flag_h":                "帮助信息",
 }
