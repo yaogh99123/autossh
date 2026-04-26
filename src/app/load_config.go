@@ -36,6 +36,7 @@ func loadConfig(configFile string) (cfg *Config, err error) {
 
 	cfg.file = configFile
 	cfg.createServerIndex()
+	cfg.applyConfig()
 
 	return cfg, nil
 }
@@ -74,6 +75,11 @@ func initConfig(configFile string) (*Config, error) {
 				},
 			},
 		},
+		Log: ServerLog{
+			Enable:   true,
+			Filename: "./autossh.log",
+			Mode:     LogModeAppend,
+		},
 	}
 	cfg.file = configFile
 	err := cfg.saveConfig(false)
@@ -81,5 +87,13 @@ func initConfig(configFile string) (*Config, error) {
 		return nil, err
 	}
 	cfg.createServerIndex()
+	cfg.applyConfig()
 	return cfg, nil
+}
+
+func (cfg *Config) applyConfig() {
+	if cfg.Log.Filename != "" {
+		utils.Logger.SetFile(cfg.Log.Filename)
+	}
+	utils.Logger.SetEnabled(cfg.Log.Enable)
 }

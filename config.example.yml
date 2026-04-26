@@ -1,5 +1,9 @@
 lang: "en"
 show_detail: true
+log:
+  enable: true
+  filename: "./autossh.log"
+  mode: "append"
 options:
   ServerAliveInterval: 30
   TERM: xterm-256color

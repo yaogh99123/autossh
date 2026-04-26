@@ -7,6 +7,7 @@ import (
 
 type logger struct {
 	File     string
+	Enabled  bool
 	category string
 	level    string
 }
@@ -14,13 +15,25 @@ type logger struct {
 var Logger logger
 
 func init() {
-	logFile, _ := ParsePath("./app.log")
+	logFile, _ := ParsePath("./autossh.log")
 	Logger = logger{
-		File: logFile,
+		File:    logFile,
+		Enabled: true,
 	}
 }
 
+func (logger *logger) SetEnabled(enabled bool) {
+	logger.Enabled = enabled
+}
+
+func (logger *logger) SetFile(file string) {
+	logger.File, _ = ParsePath(file)
+}
+
 func (logger *logger) write(msg ...interface{}) {
+	if !logger.Enabled {
+		return
+	}
 	if _, err := os.Stat(logger.File); err != nil {
 		if os.IsNotExist(err) {
 			_, err := os.Create(logger.File)
