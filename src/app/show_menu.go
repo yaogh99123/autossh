@@ -38,6 +38,14 @@ func init() {
 	// 注册隐藏的/快捷指令操作
 	operations["s"] = Operation{Key: "s", Label: "搜索", Process: handleSearch}
 	operations["menu"] = Operation{Key: "menu", Label: "菜单", Process: handleMenu}
+	operations["a"] = Operation{Key: "a", Label: "全部", Process: func(cfg *Config, args []string) error {
+		cfg.ShowAll = true
+		return cfg.saveConfig(false)
+	}}
+	operations["h"] = Operation{Key: "h", Label: "隐藏", Process: func(cfg *Config, args []string) error {
+		cfg.ShowAll = false
+		return cfg.saveConfig(false)
+	}}
 }
 
 func showMenu() {

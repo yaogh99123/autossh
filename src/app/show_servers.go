@@ -39,29 +39,53 @@ func showServers(configFile string) {
 func show(cfg *Config) {
 	maxlen := separatorLength(*cfg)
 	utils.Blueln(utils.FormatSeparator(" 欢迎使用 Auto SSH ", "=", maxlen))
+
+	count := 0
+	limit := 8
+	hasMore := false
+
 	for i, server := range cfg.Servers {
+		if !cfg.ShowAll && count >= limit {
+			hasMore = true
+			break
+		}
 		utils.Logln(server.FormatPrint(strconv.Itoa(i+1), cfg.ShowDetail))
+		count++
 	}
 
-	for _, group := range cfg.Groups {
-		if len(group.Servers) == 0 {
-			continue
-		}
+	if !(!cfg.ShowAll && count >= limit) {
+		for _, group := range cfg.Groups {
+			if len(group.Servers) == 0 {
+				continue
+			}
 
-		var collapseNotice = ""
-		if group.Collapse {
-			collapseNotice = "[" + group.Prefix + " ↓]"
-		} else {
-			collapseNotice = "[" + group.Prefix + " ↑]"
-		}
+			var collapseNotice = ""
+			if group.Collapse {
+				collapseNotice = "[" + group.Prefix + " ↓]"
+			} else {
+				collapseNotice = "[" + group.Prefix + " ↑]"
+			}
 
-		utils.Logln()
-		utils.Yellowln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
-		if !group.Collapse {
-			for i, server := range group.Servers {
-				utils.Logln(server.FormatPrint(group.Prefix+strconv.Itoa(i+1), cfg.ShowDetail))
+			utils.Logln()
+			utils.Yellowln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
+			if !group.Collapse {
+				for i, server := range group.Servers {
+					if !cfg.ShowAll && count >= limit {
+						hasMore = true
+						break
+					}
+					utils.Logln(server.FormatPrint(group.Prefix+strconv.Itoa(i+1), cfg.ShowDetail))
+					count++
+				}
+			}
+			if !cfg.ShowAll && count >= limit {
+				break
 			}
 		}
+	}
+
+	if hasMore {
+		utils.Yellowln("\n... (更多服务器已隐藏, 输入 'a' 显示全部)")
 	}
 
 	utils.Logln()
@@ -73,7 +97,15 @@ func show(cfg *Config) {
 
 	// 快捷指令
 	utils.Log(utils.Colored("快捷指令: ", utils.ColorYellow))
-	utils.Logln("[s]搜索, [menu]菜单")
+	utils.Logln("[s]搜索, [menu]菜单, [a]显示全部, [h]隐藏多余")
+
+	// 传输指令 (支持多线程)
+	// utils.Log(utils.Colored("传输指令: ", utils.ColorYellow))
+	// utils.Logln("autossh up/down [-r] [-j 并发数] 源 目标")
+	// utils.Log(utils.Colored("      示例: ", utils.ColorBlue))
+	// utils.Logln("autossh up -r -j 10 ./dist/ server:/var/www/html")
+	// utils.Log(utils.Colored("            ", utils.ColorBlue))
+	// utils.Logln("autossh down server:/logs/app.log ./local_logs/")
 
 	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
 	utils.Cyanln("请选择功能 [序号, 别名, s]: ")

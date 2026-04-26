@@ -39,6 +39,16 @@ func (server *Server) scanVal(fieldName string) (err error) {
 			field.SetInt(int64(ipt))
 		}
 	case "string":
+		// 如果是 Key 字段且 Method 为 key，尝试自动关联私钥
+		if fieldName == "Key" && server.Method == "key" {
+			selectedKey, _ := pickSSHKey()
+			if selectedKey != "" {
+				field.SetString(selectedKey)
+				utils.Infoln("Key: " + selectedKey)
+				return nil
+			}
+		}
+
 		utils.Info(fieldName + deftVal(field.String()) + ":")
 		var ipt string
 		if _, err = fmt.Scanln(&ipt); err == nil {
