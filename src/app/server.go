@@ -68,16 +68,22 @@ func (server *Server) MergeOptions(options map[string]interface{}, overwrite boo
 }
 
 // 格式化输出，用于打印
-func (server *Server) FormatPrint(flag string, ShowDetail bool) string {
+func (server *Server) FormatPrint(flag string, ShowDetail bool, flagWidth, nameWidth int) string {
 	alias := ""
 	if server.Alias != "" {
 		alias = "|" + server.Alias
 	}
 
+	fullFlag := "[" + flag + alias + "]"
+	flagPart := utils.AppendRight(fullFlag, " ", flagWidth)
+	coloredFlag := utils.Colored(flagPart, utils.ColorCyan)
+
+	namePart := utils.AppendRight(server.Name, " ", nameWidth)
+
 	if ShowDetail {
-		return " " + utils.Colored("["+flag+alias+"]", utils.ColorCyan) + "\t" + server.Name + " [" + server.User + "@" + server.Ip + "]"
+		return " " + coloredFlag + "  " + namePart + "  [" + server.User + "@" + server.Ip + "]"
 	} else {
-		return " " + utils.Colored("["+flag+alias+"]", utils.ColorCyan) + "\t" + server.Name
+		return " " + coloredFlag + "  " + namePart
 	}
 }
 

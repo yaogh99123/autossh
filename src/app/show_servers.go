@@ -39,6 +39,7 @@ func showServers(configFile string) {
 // 显示服务
 func show(cfg *Config) {
 	maxlen := separatorLength(*cfg)
+	flagWidth, nameWidth := calculateWidths(cfg)
 	utils.Blueln(utils.FormatSeparator(i18n.T("welcome_autossh"), "=", maxlen))
 
 	count := 0
@@ -50,7 +51,7 @@ func show(cfg *Config) {
 			hasMore = true
 			break
 		}
-		utils.Logln(server.FormatPrint(strconv.Itoa(i+1), cfg.ShowDetail))
+		utils.Logln(server.FormatPrint(strconv.Itoa(i+1), cfg.ShowDetail, flagWidth, nameWidth))
 		count++
 	}
 
@@ -75,7 +76,7 @@ func show(cfg *Config) {
 						hasMore = true
 						break
 					}
-					utils.Logln(server.FormatPrint(group.Prefix+strconv.Itoa(i+1), cfg.ShowDetail))
+					utils.Logln(server.FormatPrint(group.Prefix+strconv.Itoa(i+1), cfg.ShowDetail, flagWidth, nameWidth))
 					count++
 				}
 			}
@@ -123,4 +124,39 @@ func separatorLength(cfg Config) int {
 	}
 
 	return maxlength
+}
+
+// 预计算所有列的最大宽度
+func calculateWidths(cfg *Config) (int, int) {
+	flagWidth := 0
+	nameWidth := 0
+
+	// 辅助计算函数
+	update := func(s *Server, flag string) {
+		alias := ""
+		if s.Alias != "" {
+			alias = "|" + s.Alias
+		}
+		fullFlag := "[" + flag + alias + "]"
+		fw := utils.ZhLen(fullFlag)
+		if fw > flagWidth {
+			flagWidth = fw
+		}
+		nw := utils.ZhLen(s.Name)
+		if nw > nameWidth {
+			nameWidth = nw
+		}
+	}
+
+	for i, server := range cfg.Servers {
+		update(server, strconv.Itoa(i+1))
+	}
+
+	for _, group := range cfg.Groups {
+		for i := range group.Servers {
+			update(&group.Servers[i], group.Prefix+strconv.Itoa(i+1))
+		}
+	}
+
+	return flagWidth, nameWidth
 }

@@ -25,15 +25,15 @@ func FormatSeparator(title string, c string, maxlength int) string {
 }
 
 // 右填充
-//func AppendRight(body string, char string, maxlength int) string {
-//	length := ZhLen(body)
-//	if length >= maxlength {
-//		return body
-//	}
-//
-//	for i := 0; i < maxlength-length; i++ {
-//		body = body + char
-//	}
-//
-//	return body
-//}
+func AppendRight(body string, char string, maxlength int) string {
+	length := ZhLen(body)
+	if length >= maxlength {
+		return body
+	}
+
+	for i := 0; i < maxlength-length; i++ {
+		body = body + char
+	}
+
+	return body
+}
