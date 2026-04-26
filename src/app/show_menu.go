@@ -27,6 +27,10 @@ func init() {
 			{Key: "exit", Label: "退出", End: true},
 		},
 	}
+
+	// 注册隐藏的/快捷指令操作
+	operations["s"] = Operation{Key: "s", Label: "搜索", Process: handleSearch}
+	operations["menu"] = Operation{Key: "menu", Label: "菜单", Process: handleMenu}
 }
 
 func showMenu() {

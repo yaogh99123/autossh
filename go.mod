@@ -1,20 +1,30 @@
 module autossh
 
-go 1.12
+go 1.24
+
+toolchain go1.24.13
 
 require (
-	github.com/kr/fs v0.1.0 // indirect
-	github.com/pkg/errors v0.8.1
+	github.com/junegunn/fzf v0.72.0
+	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.10.0
-	github.com/stretchr/testify v1.3.0 // indirect
-	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
-	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
-	golang.org/x/sys v0.0.0-20190509141414-a5b02f93d862 // indirect
+	golang.org/x/crypto v0.23.0
+	golang.org/x/net v0.25.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-replace (
-	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190701094942-4def268fd1a4
-	golang.org/x/net => github.com/golang/net v0.0.0-20190813141303-74dc4d7220e7
-	golang.org/x/sys => github.com/golang/sys v0.0.0-20190813064441-fde4db37ae7a
+require (
+	github.com/charlievieth/fastwalk v1.0.14 // indirect
+	github.com/gdamore/encoding v1.0.1 // indirect
+	github.com/gdamore/tcell/v2 v2.9.0 // indirect
+	github.com/junegunn/go-shellwords v0.0.0-20250127100254-2aa3b3277741 // indirect
+	github.com/kr/fs v0.1.0 // indirect
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/stretchr/testify v1.3.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 )

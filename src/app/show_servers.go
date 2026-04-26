@@ -55,6 +55,7 @@ func show(cfg *Config) {
 			collapseNotice = "[" + group.Prefix + " ↑]"
 		}
 
+		utils.Logln()
 		utils.Yellowln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
 		if !group.Collapse {
 			for i, server := range group.Servers {
@@ -63,12 +64,19 @@ func show(cfg *Config) {
 		}
 	}
 
+	utils.Logln()
 	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
 
-	showMenu()
+	// 常用提示 (对齐 dcli 风格)
+	utils.Log(utils.Colored("常用提示: ", utils.ColorYellow))
+	utils.Logln("add.添加, edit.编辑, remove.删除, exit.退出")
+
+	// 快捷指令
+	utils.Log(utils.Colored("快捷指令: ", utils.ColorYellow))
+	utils.Logln("[s]搜索, [menu]菜单")
 
 	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
-	utils.Cyanln("请输入序号或操作: ")
+	utils.Cyanln("请选择功能 [序号, 别名, s]: ")
 }
 
 // 计算分隔符长度
