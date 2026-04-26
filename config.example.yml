@@ -1,3 +1,4 @@
+lang: "en"
 show_detail: true
 options:
   ServerAliveInterval: 30
