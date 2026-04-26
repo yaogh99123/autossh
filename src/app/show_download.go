@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"flag"
 	"fmt"
@@ -46,10 +47,10 @@ func showDownload(configFile string) {
 	var args = flag.Args()
 
 	if len(args) < 2 {
-		utils.Errorln("用法: autossh down [-r] [-j 并发数] <服务器名/序号:远程路径> <本地路径>")
-		utils.Errorln("示例: autossh down server1:/home/user/file.txt ./file.txt")
-		utils.Errorln("示例: autossh down 01:/home/user/file.txt ~/Downloads/file.txt  (使用序号)")
-		utils.Errorln("示例: autossh down -r -j 10 01:/home/user/dir/ ~/Downloads/  (10个并发)")
+		utils.Errorln(i18n.T("down_usage"))
+		utils.Errorln(i18n.T("down_example1"))
+		utils.Errorln(i18n.T("down_example2"))
+		utils.Errorln(i18n.T("down_example3"))
 		return
 	}
 
@@ -60,7 +61,7 @@ func showDownload(configFile string) {
 	// 解析远程源
 	parts := strings.Split(remoteSource, ":")
 	if len(parts) != 2 {
-		utils.Errorln("远程源格式错误，应为: 服务器名/序号:路径")
+		utils.Errorln(i18n.T("down_err_format"))
 		return
 	}
 
@@ -93,14 +94,14 @@ func showDownload(configFile string) {
 	}
 
 	if !exists {
-		utils.Errorln("服务器 " + serverName + " 不存在")
+		utils.Errorln(i18n.T("err_server_not_found", serverName))
 		return
 	}
 
 	// 建立SFTP连接
 	sftpClient, err := serverIndex.server.GetSftpClient()
 	if err != nil {
-		utils.Errorln("连接服务器失败: " + err.Error())
+		utils.Errorln(i18n.T("err_conn_fail", err))
 		return
 	}
 	defer func() {
@@ -114,23 +115,23 @@ func showDownload(configFile string) {
 	// 检查远程文件是否存在
 	remoteFileInfo, err := srcIOClient.Stat(remotePath)
 	if err != nil {
-		utils.Errorln("远程文件不存在: " + remotePath)
+		utils.Errorln(i18n.T("down_err_remote_not_found", remotePath))
 		return
 	}
 
 	// 如果是目录但未指定-r参数
 	if remoteFileInfo.IsDir() && !download.isDir {
-		utils.Errorln("远程路径是目录，请使用 -r 参数")
+		utils.Errorln(i18n.T("down_err_is_dir"))
 		return
 	}
 
 	// 执行下载
 	if err := download.downloadFile(srcIOClient, dstIOClient, remotePath, localTarget); err != nil {
-		utils.Errorln("下载失败: " + err.Error())
+		utils.Errorln(i18n.T("down_err_download", err))
 		return
 	}
 
-	fmt.Println("下载完成!")
+	fmt.Println(i18n.T("down_success"))
 }
 
 // 下载文件或目录
@@ -229,7 +230,7 @@ func (d *Download) downloadDirectory(srcIO IOClient, dstIO IOClient, srcPath str
 	for _, dir := range dirs {
 		srcEntryPath := path.Join(srcPath, dir.Name())
 		if err := d.downloadDirectory(srcIO, dstIO, srcEntryPath, targetDir); err != nil {
-			fmt.Printf("下载目录 %s 失败: %v\n", srcEntryPath, err)
+			fmt.Printf(i18n.T("down_err_dir_fail", srcEntryPath, err))
 		}
 	}
 
@@ -253,7 +254,7 @@ func (d *Download) downloadFilesParallel(srcIO IOClient, dstIO IOClient, srcPath
 			
 			srcEntryPath := path.Join(srcPath, file.Name())
 			if err := d.downloadSingleFile(srcIO, dstIO, srcEntryPath, targetDir); err != nil {
-				fmt.Printf("下载文件 %s 失败: %v\n", srcEntryPath, err)
+				fmt.Printf(i18n.T("down_err_file_fail", srcEntryPath, err))
 			}
 		}(file)
 	}

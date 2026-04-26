@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"flag"
 	"fmt"
@@ -46,10 +47,10 @@ func showUpload(configFile string) {
 	var args = flag.Args()
 
 	if len(args) < 2 {
-		utils.Errorln("用法: autossh upload/up [-r] [-j 并发数] <本地文件/目录> <服务器名/序号:远程路径>")
-		utils.Errorln("示例: autossh upload file.txt server1:/home/user/")
-		utils.Errorln("示例: autossh up file.txt 01:/home/user/  (使用序号)")
-		utils.Errorln("示例: autossh upload -r -j 10 ./localdir 01:/home/user/  (10个并发)")
+		utils.Errorln(i18n.T("up_usage"))
+		utils.Errorln(i18n.T("up_example1"))
+		utils.Errorln(i18n.T("up_example2"))
+		utils.Errorln(i18n.T("up_example3"))
 		return
 	}
 
@@ -59,14 +60,14 @@ func showUpload(configFile string) {
 
 	// 检查本地文件是否存在
 	if _, err := os.Stat(localPath); os.IsNotExist(err) {
-		utils.Errorln("本地文件不存在: " + localPath)
+		utils.Errorln(i18n.T("up_err_local_not_found", localPath))
 		return
 	}
 
 	// 解析远程目标
 	parts := strings.Split(remoteTarget, ":")
 	if len(parts) != 2 {
-		utils.Errorln("远程目标格式错误，应为: 服务器名/序号:路径")
+		utils.Errorln(i18n.T("up_err_format"))
 		return
 	}
 
@@ -99,14 +100,14 @@ func showUpload(configFile string) {
 	}
 
 	if !exists {
-		utils.Errorln("服务器 " + serverName + " 不存在")
+		utils.Errorln(i18n.T("err_server_not_found", serverName))
 		return
 	}
 
 	// 建立SFTP连接
 	sftpClient, err := serverIndex.server.GetSftpClient()
 	if err != nil {
-		utils.Errorln("连接服务器失败: " + err.Error())
+		utils.Errorln(i18n.T("err_conn_fail", err))
 		return
 	}
 	defer func() {
@@ -120,23 +121,23 @@ func showUpload(configFile string) {
 	// 获取本地文件信息
 	localFileInfo, err := os.Stat(localPath)
 	if err != nil {
-		utils.Errorln("获取本地文件信息失败: " + err.Error())
+		utils.Errorln(i18n.T("up_err_local_stat", err))
 		return
 	}
 
 	// 如果是目录但未指定-r参数
 	if localFileInfo.IsDir() && !upload.isDir {
-		utils.Errorln("本地路径是目录，请使用 -r 参数")
+		utils.Errorln(i18n.T("up_err_is_dir"))
 		return
 	}
 
 	// 执行上传
 	if err := upload.uploadFile(srcIOClient, dstIOClient, localPath, remotePath); err != nil {
-		utils.Errorln("上传失败: " + err.Error())
+		utils.Errorln(i18n.T("up_err_upload", err))
 		return
 	}
 
-	fmt.Println("上传完成!")
+	fmt.Println(i18n.T("up_success"))
 }
 
 // 上传文件或目录
@@ -234,7 +235,7 @@ func (u *Upload) uploadDirectory(srcIO IOClient, dstIO IOClient, srcPath string,
 	for _, dir := range dirs {
 		srcEntryPath := filepath.Join(srcPath, dir.Name())
 		if err := u.uploadDirectory(srcIO, dstIO, srcEntryPath, targetDir); err != nil {
-			fmt.Printf("上传目录 %s 失败: %v\n", srcEntryPath, err)
+			fmt.Printf(i18n.T("up_err_dir_fail", srcEntryPath, err))
 		}
 	}
 
@@ -258,7 +259,7 @@ func (u *Upload) uploadFilesParallel(srcIO IOClient, dstIO IOClient, srcPath str
 
 			srcEntryPath := filepath.Join(srcPath, file.Name())
 			if err := u.uploadSingleFile(srcIO, dstIO, srcEntryPath, targetDir); err != nil {
-				fmt.Printf("上传文件 %s 失败: %v\n", srcEntryPath, err)
+				fmt.Printf(i18n.T("up_err_file_fail", srcEntryPath, err))
 			}
 		}(file)
 	}

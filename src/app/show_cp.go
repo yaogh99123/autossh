@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"flag"
 	"fmt"
@@ -112,7 +113,7 @@ func (cp *Cp) parse() error {
 	var err error
 
 	if len(args) < 1 {
-		return errors.New("请输入完整参数")
+		return errors.New(i18n.T("cp_err_missing_args"))
 	}
 
 	cp.target, err = newTransferObject(*cp.cfg, args[length-1])
@@ -128,7 +129,7 @@ func (cp *Cp) parse() error {
 		}
 
 		if s.resType == ResTypeSrc && s.resType == cp.target.resType {
-			return errors.New("源和目标不能同时为本地地址")
+			return errors.New(i18n.T("cp_err_both_local"))
 		}
 
 		cp.sources = append(cp.sources, s)
@@ -222,7 +223,7 @@ func (cp *Cp) transferNew(srcIO IOClient, dstIO IOClient, src string, dst string
 
 	if srcFileInfo.IsDir() {
 		if !cp.isDir {
-			return src, errors.New("是一个目录")
+			return src, errors.New(i18n.T("cp_err_is_dir"))
 		}
 
 		childFiles, err := srcIO.ReadDir(srcFile.Name())
@@ -338,13 +339,13 @@ func newTransferObject(cfg Config, raw string) (*TransferObject, error) {
 		obj.path = strings.TrimSpace(args[1])
 		serverIndex, exists := cfg.serverIndex[args[0]]
 		if !exists {
-			return nil, errors.New("服务器" + args[0] + "不存在")
+			return nil, errors.New(i18n.T("err_server_not_found", args[0]))
 		}
 		obj.resType = ResTypeDst
 		obj.server = serverIndex.server
 
 	default:
-		return nil, errors.New(raw + " 格式错误")
+		return nil, errors.New(i18n.T("cp_err_format", raw))
 	}
 
 	return &obj, nil
