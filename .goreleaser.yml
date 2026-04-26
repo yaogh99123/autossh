@@ -20,13 +20,13 @@ builds:
     goarm:
       - 6
       - 7
+    main: ./src/main/main.go
     ldflags:
       - -s -w -X main.Version={{.Version}} -X main.Build={{.Commit}} -X main.date={{.Date}} -X main.buildSource=binaryRelease
 
 # 归档配置 (已修复文件名冲突问题)
 archives:
-  - builds:
-      - binary
+  - id: default
     # 关键修改：当架构是 arm 时，自动添加 v6 或 v7 后缀
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
@@ -48,7 +48,7 @@ changelog:
       - "^bump"
 
 # Homebrew 配置 (已更正为 v2 规范)
-brews:
+homebrews:
   - repository:
       owner: yaogh99123
       name: homebrew-tap
