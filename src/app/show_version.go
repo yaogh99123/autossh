@@ -6,5 +6,5 @@ import (
 
 func showVersion() {
 	utils.Logln("autossh " + Version + " Build " + Build + "。")
-	utils.Logln("由 Lenbo 编写，项目地址：https://github.com/islenbo/autossh。")
+	utils.Logln("由 Timo 编写，项目地址：https://github.com/yaogh99123/autossh。")
 }

@@ -239,7 +239,7 @@ func (upgrade *Upgrade) downloadUrl() string {
 // 读取最新版本信息
 func (upgrade *Upgrade) loadLatestVersion() {
 	// 使用github api获取最新版本信息
-	resp, err := http.Get("https://api.github.com/repos/islenbo/autossh/releases/latest")
+	resp, err := http.Get("https://api.github.com/repos/yaogh99123/autossh/releases/latest")
 	if err != nil {
 		panic(err)
 	}
