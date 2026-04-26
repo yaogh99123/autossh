@@ -94,6 +94,11 @@ Commands:
 	"remove_enter_index":        "Please enter the corresponding index:",
 	"remove_index_not_found":    "Index does not exist",
 
+	"edit_enter_index":          "Please enter the corresponding index:",
+	"edit_index_not_found":      "Index does not exist",
+	"add_other_group":           "[Other values] Default group",
+	"add_enter_group":           "Please enter the group to insert:",
+
 	"app_flag_c":                "Specify configuration file path",
 	"app_flag_v":                "Version information",
 	"app_flag_h":                "Help information",

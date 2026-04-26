@@ -94,6 +94,11 @@ Commands:
 	"remove_enter_index":        "请输入相应序号：",
 	"remove_index_not_found":    "序号不存在",
 
+	"edit_enter_index":          "请输入相应序号：",
+	"edit_index_not_found":      "序号不存在",
+	"add_other_group":           "[其他值]默认组",
+	"add_enter_group":           "请输入要插入的组：",
+
 	"app_flag_c":                "指定配置文件路径",
 	"app_flag_v":                "版本信息",
 	"app_flag_h":                "帮助信息",
