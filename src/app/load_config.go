@@ -30,6 +30,10 @@ func loadConfig(configFile string) (cfg *Config, err error) {
 		return cfg, err
 	}
 
+	if cfg.Lang != "" {
+		i18n.SetLanguage(cfg.Lang)
+	}
+
 	cfg.file = configFile
 	cfg.createServerIndex()
 
@@ -39,6 +43,7 @@ func loadConfig(configFile string) (cfg *Config, err error) {
 // 初始化默认配置
 func initConfig(configFile string) (*Config, error) {
 	cfg := &Config{
+		Lang:       string(i18n.GetCurrentLang()),
 		ShowDetail: true,
 		Options: map[string]interface{}{
 			"ServerAliveInterval": 30,

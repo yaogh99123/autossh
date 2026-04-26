@@ -18,6 +18,7 @@ type Config struct {
 	Groups     []*Group               `json:"groups" yaml:"groups"`
 	ShowAll    bool                   `json:"show_all" yaml:"show_all"`
 	Options    map[string]interface{} `json:"options" yaml:"options"`
+	Lang       string                 `json:"lang" yaml:"lang"`
 
 	// 服务器map索引，可通过编号、别名快速定位到某一个服务器
 	serverIndex map[string]ServerIndex
