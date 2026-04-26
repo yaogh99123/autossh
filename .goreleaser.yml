@@ -10,7 +10,6 @@ env:
 builds:
   - id: binary
     goos:
-      - windows
       - darwin
       - linux
     goarch:
@@ -30,9 +29,6 @@ archives:
       - binary
     # 关键修改：当架构是 arm 时，自动添加 v6 或 v7 后缀
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
-    format_overrides:
-      - goos: windows
-        format: zip
 
 # 校验码配置
 checksum:
@@ -58,4 +54,4 @@ brews:
       name: homebrew-tap
     directory: Formula
     homepage: "https://github.com/yaogh99123/homebrew-tap/"
-    description: "A simple terminal UI for docker, written in Go"
+    description: "A simple ssh connection manager, written in Go"

@@ -43,6 +43,18 @@ Support direct command entry in the main interface:
 ### 4. Auto Update
 - Enter `upgrade` to automatically detect and upgrade to the latest version from `yaogh99123/autossh`.
 
+## ⚙️ Configuration
+The configuration file is located at `~/.config/autossh/config.yml`.
+
+| Field | Description | Default |
+| :--- | :--- | :--- |
+| `lang` | UI Language (`en` or `zh`). | System Default |
+| `show_detail` | Whether to show server details in the list. | `true` |
+| `show_all` | Whether to show all servers by default (disable folding). | `false` |
+
+> [!TIP]
+> If `lang` is not set, the tool will automatically detect your system language environment (via `LANG` or `LC_ALL`).
+
 ## 📦 Installation & Build
 
 ### Direct Run
