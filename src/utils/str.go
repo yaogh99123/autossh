@@ -1,21 +1,12 @@
 package utils
 
 import (
-	"unicode"
+	"github.com/mattn/go-runewidth"
 )
 
 // 计算字符宽度（中文）
 func ZhLen(str string) int {
-	length := 0
-	for _, c := range str {
-		if unicode.Is(unicode.Scripts["Han"], c) {
-			length += 2
-		} else {
-			length += 1
-		}
-	}
-
-	return length
+	return runewidth.StringWidth(str)
 }
 
 // 左右填充

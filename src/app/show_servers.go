@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"strconv"
 )
@@ -38,7 +39,7 @@ func showServers(configFile string) {
 // 显示服务
 func show(cfg *Config) {
 	maxlen := separatorLength(*cfg)
-	utils.Blueln(utils.FormatSeparator(" 欢迎使用 Auto SSH ", "=", maxlen))
+	utils.Blueln(utils.FormatSeparator(i18n.T("welcome_autossh"), "=", maxlen))
 
 	count := 0
 	limit := 8
@@ -85,19 +86,19 @@ func show(cfg *Config) {
 	}
 
 	if hasMore {
-		utils.Yellowln("\n... (更多服务器已隐藏, 输入 'a' 显示全部)")
+		utils.Yellowln(i18n.T("more_servers_hidden"))
 	}
 
 	utils.Logln()
 	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
 
 	// 常用提示 (对齐 dcli 风格)
-	utils.Log(utils.Colored("常用提示: ", utils.ColorYellow))
-	utils.Logln("add.添加, edit.编辑, remove.删除, exit.退出")
+	utils.Log(utils.Colored(i18n.T("common_tips_prefix"), utils.ColorYellow))
+	utils.Logln(i18n.T("common_tips_content"))
 
 	// 快捷指令
-	utils.Log(utils.Colored("快捷指令: ", utils.ColorYellow))
-	utils.Logln("[s]搜索, [menu]菜单, [a]显示全部, [h]隐藏多余")
+	utils.Log(utils.Colored(i18n.T("shortcut_prefix"), utils.ColorYellow))
+	utils.Logln(i18n.T("shortcut_content"))
 
 	// 传输指令 (支持多线程)
 	// utils.Log(utils.Colored("传输指令: ", utils.ColorYellow))
@@ -108,7 +109,7 @@ func show(cfg *Config) {
 	// utils.Logln("autossh down server:/logs/app.log ./local_logs/")
 
 	utils.Blueln(utils.FormatSeparator("", "=", maxlen))
-	utils.Cyanln("请选择功能 [序号, 别名, s]: ")
+	utils.Cyanln(i18n.T("select_function"))
 }
 
 // 计算分隔符长度

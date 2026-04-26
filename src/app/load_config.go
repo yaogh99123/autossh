@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
@@ -15,10 +16,10 @@ func loadConfig(configFile string) (cfg *Config, err error) {
 	}
 
 	if exists, _ := utils.FileIsExists(configFile); !exists {
-		utils.Infoln("配置文件不存在，正在初始化默认配置...")
+		utils.Infoln(i18n.T("config_not_found_init"))
 		cfg, err = initConfig(configFile)
 		if err != nil {
-			return nil, errors.Wrap(err, "初始化配置失败")
+			return nil, errors.Wrap(err, i18n.T("config_init_fail"))
 		}
 		return cfg, nil
 	}

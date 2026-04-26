@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"strings"
 )
@@ -19,12 +20,12 @@ var operations = make(map[string]Operation)
 func init() {
 	menuMap = [][]Operation{
 		{
-			{Key: "add", Label: "添加", Process: handleAdd},
-			{Key: "edit", Label: "编辑", Process: handleEdit},
-			{Key: "remove", Label: "删除", Process: handleRemove},
+			{Key: "add", Label: "menu_add", Process: handleAdd},
+			{Key: "edit", Label: "menu_edit", Process: handleEdit},
+			{Key: "remove", Label: "menu_remove", Process: handleRemove},
 		},
 		{
-			{Key: "exit", Label: "退出", End: true},
+			{Key: "exit", Label: "menu_exit", End: true},
 		},
 	}
 
@@ -36,13 +37,13 @@ func init() {
 	}
 
 	// 注册隐藏的/快捷指令操作
-	operations["s"] = Operation{Key: "s", Label: "搜索", Process: handleSearch}
-	operations["menu"] = Operation{Key: "menu", Label: "菜单", Process: handleMenu}
-	operations["a"] = Operation{Key: "a", Label: "全部", Process: func(cfg *Config, args []string) error {
+	operations["s"] = Operation{Key: "s", Label: "menu_search", Process: handleSearch}
+	operations["menu"] = Operation{Key: "menu", Label: "menu_menu", Process: handleMenu}
+	operations["a"] = Operation{Key: "a", Label: "menu_all", Process: func(cfg *Config, args []string) error {
 		cfg.ShowAll = true
 		return cfg.saveConfig(false)
 	}}
-	operations["h"] = Operation{Key: "h", Label: "隐藏", Process: func(cfg *Config, args []string) error {
+	operations["h"] = Operation{Key: "h", Label: "menu_hide", Process: func(cfg *Config, args []string) error {
 		cfg.ShowAll = false
 		return cfg.saveConfig(false)
 	}}
@@ -81,7 +82,7 @@ func showMenu() {
 }
 
 func operationFormat(operation Operation) string {
-	return utils.Colored("["+operation.Key+"]", utils.ColorGreen) + " " + operation.Label
+	return utils.Colored("["+operation.Key+"]", utils.ColorGreen) + " " + i18n.T(operation.Label)
 }
 
 func stringPadding(str string, paddingLen int) string {

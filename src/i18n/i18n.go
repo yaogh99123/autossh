@@ -15,16 +15,7 @@ const (
 
 var currentLang = LangEN
 
-// 语言包词典定义
-var enUS = map[string]string{
-	// TODO: 待后续逐步从代码中提取英文翻译
-	"test_key": "Test Message: %s",
-}
 
-var zhCN = map[string]string{
-	// TODO: 待后续逐步从代码中提取中文翻译
-	"test_key": "测试消息: %s",
-}
 
 // dicts 聚合所有语言包
 var dicts = map[Language]map[string]string{

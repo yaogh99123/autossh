@@ -3,6 +3,10 @@
 github.com/charlievieth/fastwalk
 github.com/charlievieth/fastwalk/internal/dirent
 github.com/charlievieth/fastwalk/internal/fmtdirent
+# github.com/clipperhouse/uax29/v2 v2.2.0
+## explicit; go 1.18
+github.com/clipperhouse/uax29/v2/graphemes
+github.com/clipperhouse/uax29/v2/internal/iterators
 # github.com/gdamore/encoding v1.0.1
 ## explicit; go 1.9
 github.com/gdamore/encoding
@@ -64,8 +68,8 @@ github.com/lucasb-eyer/go-colorful
 # github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
-# github.com/mattn/go-runewidth v0.0.16
-## explicit; go 1.9
+# github.com/mattn/go-runewidth v0.0.23
+## explicit; go 1.20
 github.com/mattn/go-runewidth
 # github.com/pkg/errors v0.9.1
 ## explicit
