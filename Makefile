@@ -14,10 +14,10 @@ vendor: tidy
 	go mod vendor
 
 build: vendor
-	mkdir -p ./bin
-	go build -mod=vendor -o ./bin/${PROJECT} -ldflags ${LDFLAGS} src/main/main.go
+	go build -mod=vendor -o ${PROJECT} -ldflags ${LDFLAGS} src/main/main.go
 
 clean:
+	rm -f ${PROJECT}
 	rm -rf ./bin
 	rm -rf ./releases
 	rm -rf ./vendor
