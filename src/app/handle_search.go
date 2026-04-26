@@ -1,6 +1,7 @@
 package app
 
 import (
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"fmt"
 	"strings"
@@ -33,7 +34,7 @@ func handleSearch(cfg *Config, args []string) error {
 	}
 
 	if len(allInfos) == 0 {
-		return fmt.Errorf("没有可用的服务器")
+		return fmt.Errorf(i18n.T("search_no_servers"))
 	}
 
 	// 2. 准备数据通道
@@ -57,8 +58,8 @@ func handleSearch(cfg *Config, args []string) error {
 	fzfArgs := []string{
 		"--reverse",
 		"--height=40%",
-		"--prompt=搜索服务器> ",
-		"--header=快捷菜单搜索 (fzf 模式, Esc 退出)",
+		"--prompt=" + i18n.T("search_prompt"),
+		"--header=" + i18n.T("search_header"),
 		"--bind=esc:print(ESC)+abort",
 		"--bind=ctrl-c:print(CTRL-C)+abort",
 		"--delimiter=\t",
@@ -67,7 +68,7 @@ func handleSearch(cfg *Config, args []string) error {
 
 	options, err := fzf.ParseOptions(true, fzfArgs)
 	if err != nil {
-		return fmt.Errorf("fzf 初始化失败: %v", err)
+		return fmt.Errorf(i18n.T("search_err_init", err))
 	}
 
 	options.Input = inputChan
@@ -89,7 +90,7 @@ func handleSearch(cfg *Config, args []string) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("fzf 运行失败 (code %d): %v", code, err)
+		return fmt.Errorf(i18n.T("search_err_run", code, err))
 	}
 
 	// 5. 处理结果
@@ -110,7 +111,7 @@ func handleSearch(cfg *Config, args []string) error {
 					}
 				}
 				if target != nil {
-					utils.Infoln("\n你选择了", target.Name)
+					utils.Infoln("\n"+i18n.T("search_selected", target.Name))
 					return target.Connect()
 				}
 			}

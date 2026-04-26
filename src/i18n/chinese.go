@@ -71,4 +71,20 @@ Commands:
 	"up_success":                "上传完成!",
 	"up_err_dir_fail":           "上传目录 %s 失败: %v\n",
 	"up_err_file_fail":          "上传文件 %s 失败: %v\n",
+
+	"search_no_servers":         "没有可用的服务器",
+	"search_prompt":             "搜索服务器> ",
+	"search_header":             "快捷菜单搜索 (fzf 模式, Esc 退出)",
+	"search_err_init":           "fzf 初始化失败: %v",
+	"search_selected":           "你选择了 %s",
+	"search_err_run":            "fzf 运行失败 (code %d): %v",
+
+	"upgrade_checking":          "正在检测最新版本",
+	"upgrade_current_ver":       "当前版本：%s",
+	"upgrade_up_to_date":        "感谢您的支持，当前已是最新版本。",
+	"upgrade_new_ver":           "检测到新版本：%s",
+	"upgrade_unsupported_os":    "暂不支持 %s 系统自动更新，请下载源码包手动编译。",
+	"upgrade_err_download":      "下载失败：%v",
+	"upgrade_err_unzip":         "解压缩失败：%v",
+	"upgrade_err_install":       "安装失败",
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"archive/zip"
+	"autossh/src/i18n"
 	"autossh/src/utils"
 	"encoding/json"
 	"fmt"
@@ -37,7 +38,7 @@ func (upgrade *Upgrade) exec() {
 	islock := true
 
 	go func() {
-		utils.Log("正在检测最新版本")
+		utils.Log(i18n.T("upgrade_checking"))
 		for {
 			if !islock {
 				utils.Logln("")
@@ -58,18 +59,18 @@ func (upgrade *Upgrade) exec() {
 	waitGroutp.Add(2)
 	waitGroutp.Wait()
 
-	utils.Logln("当前版本：" + upgrade.Version)
+	utils.Logln(i18n.T("upgrade_current_ver", upgrade.Version))
 	latestVersion := upgrade.latest["tag_name"].(string)
 	ret := upgrade.compareVersion(latestVersion, upgrade.Version)
 	if ret <= 0 {
-		utils.Logln("感谢您的支持，当前已是最新版本。")
+		utils.Logln(i18n.T("upgrade_up_to_date"))
 		return
 	}
 
-	utils.Logln("检测到新版本：" + latestVersion)
+	utils.Logln(i18n.T("upgrade_new_ver", latestVersion))
 	url := upgrade.downloadUrl()
 	if url == "" {
-		utils.Errorln("暂不支持" + runtime.GOOS + "系统自动更新，请下载源码包手动编译。")
+		utils.Errorln(i18n.T("upgrade_unsupported_os", runtime.GOOS))
 		return
 	}
 
@@ -81,21 +82,21 @@ func (upgrade *Upgrade) exec() {
 		fmt.Print("\rdownloading " + fmt.Sprintf("%.2f", process) + "%")
 	})
 	if err != nil {
-		utils.Errorln("下载失败：" + err.Error())
+		utils.Errorln(i18n.T("upgrade_err_download", err))
 		return
 	}
 	fmt.Print("\rdownloading 100%   \n")
 
 	fullpath, err := upgrade.unzip(savePath, os.TempDir())
 	if err != nil {
-		utils.Errorln("解压缩失败：" + err.Error())
+		utils.Errorln(i18n.T("upgrade_err_unzip", err))
 		return
 	}
 
 	cmd := exec.Command(fullpath + "/install")
 	output, err := cmd.Output()
 	if err != nil {
-		utils.Errorln("安装失败")
+		utils.Errorln(i18n.T("upgrade_err_install"))
 		return
 	}
 	utils.Logln(string(output))

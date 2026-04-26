@@ -71,4 +71,20 @@ Commands:
 	"up_success":                "Upload complete!",
 	"up_err_dir_fail":           "Failed to upload directory %s: %v\n",
 	"up_err_file_fail":          "Failed to upload file %s: %v\n",
+
+	"search_no_servers":         "No servers available",
+	"search_prompt":             "Search servers> ",
+	"search_header":             "Quick Menu Search (fzf mode, Esc to exit)",
+	"search_err_init":           "fzf initialization failed: %v",
+	"search_selected":           "You selected %s",
+	"search_err_run":            "fzf run failed (code %d): %v",
+
+	"upgrade_checking":          "Checking for latest version",
+	"upgrade_current_ver":       "Current version: %s",
+	"upgrade_up_to_date":        "Thank you for your support, you are already using the latest version.",
+	"upgrade_new_ver":           "New version detected: %s",
+	"upgrade_unsupported_os":    "Auto-update for %s is not supported, please download source code and compile manually.",
+	"upgrade_err_download":      "Download failed: %v",
+	"upgrade_err_unzip":         "Unzip failed: %v",
+	"upgrade_err_install":       "Installation failed",
 }
