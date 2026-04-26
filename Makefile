@@ -1,5 +1,5 @@
 PROJECT="autossh"
-VERSION="v1.2.0"
+VERSION="v1.2.1"
 BUILD=`date +%FT%T%z`
 LDFLAGS="-X main.Version=${VERSION} -X main.Build=${BUILD}"
 

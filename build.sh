@@ -5,7 +5,7 @@ go mod tidy
 go mod vendor
 
 PROJECT="autossh"
-VERSION="v1.2.0"
+VERSION="v1.2.1"
 BUILD=`date +%FT%T%z`
 CURRENT_OS=`go env GOOS`
 CURRENT_ARCH=`go env GOARCH`
