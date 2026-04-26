@@ -20,17 +20,17 @@ import (
 )
 
 type Server struct {
-	Name     string                 `json:"name"`
-	Ip       string                 `json:"ip"`
-	Port     int                    `json:"port"`
-	User     string                 `json:"user"`
-	Password string                 `json:"password"`
-	Method   string                 `json:"method"`
-	Key      string                 `json:"key"`
-	Options  map[string]interface{} `json:"options"`
-	Alias    string                 `json:"alias"`
-	NoProxy  bool                   `json:"no_proxy"`
-	Log      ServerLog              `json:"log"`
+	Name     string                 `json:"name" yaml:"name"`
+	Ip       string                 `json:"ip" yaml:"ip"`
+	Port     int                    `json:"port" yaml:"port"`
+	User     string                 `json:"user" yaml:"user"`
+	Password string                 `json:"password" yaml:"password"`
+	Method   string                 `json:"method" yaml:"method"`
+	Key      string                 `json:"key" yaml:"key"`
+	Options  map[string]interface{} `json:"options" yaml:"options"`
+	Alias    string                 `json:"alias" yaml:"alias"`
+	NoProxy  bool                   `json:"no_proxy" yaml:"no_proxy"`
+	Log      ServerLog              `json:"log" yaml:"log"`
 
 	termWidth  int
 	termHeight int

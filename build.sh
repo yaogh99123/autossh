@@ -16,7 +16,7 @@ function build() {
     echo "build ${package} ..."
     mkdir -p "./releases/${package}"
     CGO_ENABLED=0 GOOS=${os} GOARCH=${arch} go build -o "./releases/${package}/autossh" -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}" src/main/main.go
-    cp ./config.example.json "./releases/${package}/config.json"
+    cp ./config.example.yml "./releases/${package}/config.yml"
     chmod +x ./install
     cp ./install "./releases/${package}/install"
     cd ./releases/

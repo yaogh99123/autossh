@@ -38,6 +38,7 @@ go.work.sum
 # env file
 .env
 
+vendor/
 releases/
 Progress.md
 Progress_temp.md

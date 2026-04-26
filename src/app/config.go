@@ -3,7 +3,7 @@ package app
 import (
 	"autossh/src/utils"
 	"bytes"
-	"encoding/json"
+	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	"os"
@@ -13,10 +13,10 @@ import (
 )
 
 type Config struct {
-	ShowDetail bool                   `json:"show_detail"`
-	Servers    []*Server              `json:"servers"`
-	Groups     []*Group               `json:"groups"`
-	Options    map[string]interface{} `json:"options"`
+	ShowDetail bool                   `json:"show_detail" yaml:"show_detail"`
+	Servers    []*Server              `json:"servers" yaml:"servers"`
+	Groups     []*Group               `json:"groups" yaml:"groups"`
+	Options    map[string]interface{} `json:"options" yaml:"options"`
 
 	// 服务器map索引，可通过编号、别名快速定位到某一个服务器
 	serverIndex map[string]ServerIndex
@@ -24,11 +24,11 @@ type Config struct {
 }
 
 type Group struct {
-	GroupName string   `json:"group_name"`
-	Prefix    string   `json:"prefix"`
-	Servers   []Server `json:"servers"`
-	Collapse  bool     `json:"collapse"`
-	Proxy     *Proxy   `json:"proxy"`
+	GroupName string   `json:"group_name" yaml:"group_name"`
+	Prefix    string   `json:"prefix" yaml:"prefix"`
+	Servers   []Server `json:"servers" yaml:"servers"`
+	Collapse  bool     `json:"collapse" yaml:"collapse"`
+	Proxy     *Proxy   `json:"proxy" yaml:"proxy"`
 }
 
 type ProxyType string
@@ -38,11 +38,11 @@ const (
 )
 
 type Proxy struct {
-	Type     ProxyType `json:"type"`
-	Server   string    `json:"server"`
-	Port     int       `json:"port"`
-	User     string    `json:"user"`
-	Password string    `json:"password"`
+	Type     ProxyType `json:"type" yaml:"type"`
+	Server   string    `json:"server" yaml:"server"`
+	Port     int       `json:"port" yaml:"port"`
+	User     string    `json:"user" yaml:"user"`
+	Password string    `json:"password" yaml:"password"`
 }
 
 type LogMode string
@@ -53,9 +53,9 @@ const (
 )
 
 type ServerLog struct {
-	Enable   bool    `json:"enable"`
-	Filename string  `json:"filename"`
-	Mode     LogMode `json:"mode"`
+	Enable   bool    `json:"enable" yaml:"enable"`
+	Filename string  `json:"filename" yaml:"filename"`
+	Mode     LogMode `json:"mode" yaml:"mode"`
 }
 
 const (
@@ -124,13 +124,10 @@ func (cfg *Config) createServerIndex() {
 
 // 保存配置文件
 func (cfg *Config) saveConfig(backup bool) error {
-	b, err := json.Marshal(cfg)
-	if err != nil {
-		return err
-	}
-
 	var out bytes.Buffer
-	err = json.Indent(&out, b, "", "\t")
+	encoder := yaml.NewEncoder(&out)
+	encoder.SetIndent(2)
+	err := encoder.Encode(cfg)
 	if err != nil {
 		return err
 	}
@@ -141,6 +138,9 @@ func (cfg *Config) saveConfig(backup bool) error {
 			return err
 		}
 	}
+
+	// 确保目录存在
+	_ = os.MkdirAll(filepath.Dir(cfg.file), os.ModePerm)
 
 	return ioutil.WriteFile(cfg.file, out.Bytes(), os.ModePerm)
 }
@@ -157,7 +157,7 @@ func (cfg *Config) backup() error {
 	}()
 
 	path, _ := filepath.Abs(filepath.Dir(cfg.file))
-	backupFile := path + "/config-" + time.Now().Format("20060102150405") + ".json"
+	backupFile := path + "/config-" + time.Now().Format("20060102150405") + ".yml"
 	desFile, err := os.Create(backupFile)
 	if err != nil {
 		return err

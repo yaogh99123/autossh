@@ -2,8 +2,8 @@ package app
 
 import (
 	"autossh/src/utils"
-	"encoding/json"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
 
@@ -19,7 +19,7 @@ func loadConfig(configFile string) (cfg *Config, err error) {
 	}
 
 	b, _ := ioutil.ReadFile(configFile)
-	err = json.Unmarshal(b, &cfg)
+	err = yaml.Unmarshal(b, &cfg)
 	if err != nil {
 		return cfg, err
 	}

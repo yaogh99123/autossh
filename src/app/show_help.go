@@ -16,7 +16,7 @@ Usage:
   autossh [options] [commands]
 
 Options:
-  -c, -config string    指定配置文件(default: ./config.json)。
+  -c, -config string    指定配置文件(default: ~/.config/autossh/config.yml)。
   -v, -version          显示版本信息。
   -h, -help             显示帮助信息。
 
