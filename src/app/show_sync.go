@@ -3,10 +3,13 @@ package app
 import (
 	"autossh/src/i18n"
 	"autossh/src/utils"
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // showSync 处理 rsync 同步需求
@@ -66,33 +69,53 @@ func showSync(configFile string) {
 }
 
 func printSourceSize(srv *Server, src string) {
+	fmt.Printf("Calculating target size... ")
+
 	var sizeStr string
 	// 如果 src 包含 @，说明是远程源 (user@ip:path)
 	if strings.Contains(src, "@") && strings.Contains(src, ":") {
 		parts := strings.SplitN(src, ":", 2)
 		remotePath := parts[1]
 
-		// 构造 SSH 命令获取远程大小
-		sshOptions := []string{fmt.Sprintf("-p %d", srv.Port), "-o StrictHostKeyChecking=no", "-o UserKnownHostsFile=/dev/null"}
+		sshArgs := []string{
+			fmt.Sprintf("-p%d", srv.Port),
+			"-o", "StrictHostKeyChecking=no",
+			"-o", "UserKnownHostsFile=/dev/null",
+			"-o", "ConnectTimeout=10",
+		}
 		if srv.Method == "key" {
 			keyPath, _ := utils.ParsePath(string(srv.Key))
-			sshOptions = append(sshOptions, fmt.Sprintf("-i %s", keyPath))
+			sshArgs = append(sshArgs, "-i", keyPath)
 		}
+		sshArgs = append(sshArgs, fmt.Sprintf("%s@%s", srv.User, srv.Ip))
 
-		// 执行 du -sh
-		cmdStr := fmt.Sprintf("ssh %s %s@%s 'du -sh \"%s\" | cut -f1'", strings.Join(sshOptions, " "), srv.User, srv.Ip, remotePath)
-		out, err := exec.Command("sh", "-c", cmdStr).Output()
+		// 优化远程探测：增加 2>/dev/null 并放宽超时到 60 秒
+		remoteCmd := fmt.Sprintf("[ -f \"%s\" ] && stat -c%%s \"%s\" || du -sh \"%s\" 2>/dev/null | cut -f1", remotePath, remotePath, remotePath)
+		sshArgs = append(sshArgs, remoteCmd)
+
+		// 使用带 context 的命令，设置总超时 60 秒
+		ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+		defer cancel()
+
+		out, err := exec.CommandContext(ctx, "ssh", sshArgs...).Output()
 		if err == nil {
-			sizeStr = strings.TrimSpace(string(out))
+			raw := strings.TrimSpace(string(out))
+			// 如果返回的是纯数字（stat 的结果），转换一下格式
+			if val, err := strconv.ParseFloat(raw, 64); err == nil {
+				sizeStr = utils.SizeFormat(val)
+			} else {
+				sizeStr = raw
+			}
 		}
 	} else {
-		// 本地源
+		// 本地源处理
 		absPath, _ := utils.ParsePath(src)
 		info, err := os.Stat(absPath)
 		if err == nil {
 			if info.IsDir() {
-				// 简单的本地目录大小统计 (调用系统 du)
-				out, _ := exec.Command("du", "-sh", absPath).Output()
+				ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+				defer cancel()
+				out, _ := exec.CommandContext(ctx, "du", "-sh", absPath).Output()
 				fields := strings.Fields(string(out))
 				if len(fields) > 0 {
 					sizeStr = fields[0]
@@ -103,8 +126,12 @@ func printSourceSize(srv *Server, src string) {
 		}
 	}
 
+	// 清除 "Calculating..." 行并打印结果
+	fmt.Print("\r\033[K") // 清除当前行
 	if sizeStr != "" {
-		fmt.Printf("Detected target (size: %s), using rsync for transfer...\n", sizeStr)
+		utils.Blueln(fmt.Sprintf("Detected target (size: %s), using rsync for transfer...", sizeStr))
+	} else {
+		utils.Yellowln("Size calculation timeout, starting transfer directly...")
 	}
 }
 
