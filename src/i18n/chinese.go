@@ -103,5 +103,7 @@ Commands:
 	"app_flag_c":                "指定配置文件路径",
 	"app_flag_v":                "版本信息",
 	"app_flag_h":                "帮助信息",
-	"sync_usage":                "用法: autossh sync <服务器别名:远程路径> <本地路径>  (或反之)\n示例: autossh sync vps:/tmp/ ./local_dir/",
+	"sync_usage":                "用法: autossh sync <服务器别名/序号:远程路径> <本地路径>  (或反之)",
+	"sync_example1":             "示例: autossh sync vps:/tmp/ ./local_dir/  (从远程同步到本地)",
+	"sync_example2":             "示例: autossh sync ./local_dir/ 01:/tmp/   (从本地同步到服务器，使用序号)",
 }

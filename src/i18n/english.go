@@ -103,5 +103,7 @@ Commands:
 	"app_flag_c":                "Specify configuration file path",
 	"app_flag_v":                "Version information",
 	"app_flag_h":                "Help information",
-	"sync_usage":                "Usage: autossh sync <alias:remote_path> <local_path>  (or vice versa)\nExample: autossh sync vps:/tmp/ ./local_dir/",
+	"sync_usage":                "Usage: autossh sync <alias/index:remote_path> <local_path>  (or vice versa)",
+	"sync_example1":             "Example: autossh sync vps:/tmp/ ./local_dir/  (Sync from remote to local)",
+	"sync_example2":             "Example: autossh sync ./local_dir/ 01:/tmp/   (Sync from local to remote, using index)",
 }

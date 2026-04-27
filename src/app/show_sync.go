@@ -17,16 +17,8 @@ func showSync(configFile string) {
 		return
 	}
 
-	// 获取排除子命令后的参数
-	args := os.Args
-	if len(args) < 2 {
-		fmt.Println(i18n.T("sync_usage"))
-		return
-	}
-
 	// 查找同步源和目的
-	// 预期用法: autossh sync alias:/remote/path /local/path
-	// 或: autossh sync /local/path alias:/remote/path
+	args := os.Args
 	var syncArgs []string
 	var targetServer *Server
 
@@ -42,10 +34,10 @@ func showSync(configFile string) {
 
 		if strings.Contains(arg, ":") {
 			parts := strings.SplitN(arg, ":", 2)
-			alias := parts[0]
+			aliasOrIndex := parts[0]
 			path := parts[1]
 
-			if serverIndex, exists := cfg.serverIndex[alias]; exists {
+			if serverIndex, exists := cfg.serverIndex[aliasOrIndex]; exists {
 				targetServer = serverIndex.server
 				// 转换为 rsync 识别的格式: user@ip:path
 				syncArgs = append(syncArgs, fmt.Sprintf("%s@%s:%s", targetServer.User, targetServer.Ip, path))
@@ -56,12 +48,14 @@ func showSync(configFile string) {
 	}
 
 	if len(syncArgs) < 2 {
-		utils.Errorln("Error: Missing source or destination.")
+		fmt.Println(i18n.T("sync_usage"))
+		fmt.Println(i18n.T("sync_example1"))
+		fmt.Println(i18n.T("sync_example2"))
 		return
 	}
 
 	if targetServer == nil {
-		utils.Errorln("Error: No remote server alias found in arguments.")
+		utils.Errorln("Error: No remote server alias or index found in arguments.")
 		return
 	}
 
@@ -83,9 +77,13 @@ func runRsync(srv *Server, args []string) {
 		sshOptions = append(sshOptions, fmt.Sprintf("-i %s", keyPath))
 	}
 
-	// 合成最终 rsync 命令
-	// rsync -avzP -e "ssh -p 22" src dst
-	rsyncArgs := []string{"-avzP", "-e", fmt.Sprintf("ssh %s", strings.Join(sshOptions, " "))}
+	// 使用 --rsh 代替 -e，这样参数传递更稳定
+	rshCmd := fmt.Sprintf("ssh %s", strings.Join(sshOptions, " "))
+	rsyncArgs := []string{
+		"-az",
+		"--info=progress2",
+		"--rsh=" + rshCmd,
+	}
 	rsyncArgs = append(rsyncArgs, args...)
 
 	utils.Infoln(fmt.Sprintf("Executing: rsync %s", strings.Join(rsyncArgs, " ")))
