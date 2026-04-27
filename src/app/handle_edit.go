@@ -3,14 +3,12 @@ package app
 import (
 	"autossh/src/i18n"
 	"autossh/src/utils"
-	"fmt"
 	"io"
 )
 
 func handleEdit(cfg *Config, args []string) error {
-	utils.Info(i18n.T("edit_enter_index"))
-	id := ""
-	if _, err := fmt.Scanln(&id); err == io.EOF {
+	id, err := utils.ReadLine(utils.Colored(i18n.T("edit_enter_index"), utils.ColorGreen))
+	if err == io.EOF || (err != nil && err.Error() == "Interrupt") {
 		return nil
 	}
 

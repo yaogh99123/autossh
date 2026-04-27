@@ -3,7 +3,6 @@ package app
 import (
 	"autossh/src/i18n"
 	"autossh/src/utils"
-	"fmt"
 	"io"
 )
 
@@ -15,9 +14,8 @@ func handleAdd(cfg *Config, _ []string) error {
 		utils.Info("["+group.Prefix+"]"+group.GroupName, "\t")
 	}
 	utils.Infoln(i18n.T("add_other_group"))
-	utils.Info(i18n.T("add_enter_group"))
-	g := ""
-	if _, err := fmt.Scanln(&g); err == io.EOF {
+	g, err := utils.ReadLine(utils.Colored(i18n.T("add_enter_group"), utils.ColorGreen))
+	if err == io.EOF || (err != nil && err.Error() == "Interrupt") {
 		return nil
 	}
 

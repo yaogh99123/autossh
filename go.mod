@@ -5,6 +5,7 @@ go 1.24
 toolchain go1.24.13
 
 require (
+	github.com/chzyer/readline v1.5.1
 	github.com/junegunn/fzf v0.72.0
 	github.com/mattn/go-runewidth v0.0.23
 	github.com/pkg/errors v0.9.1

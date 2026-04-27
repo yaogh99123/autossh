@@ -2,7 +2,6 @@ package app
 
 import (
 	"autossh/src/utils"
-	"fmt"
 	"io"
 	"reflect"
 	"strconv"
@@ -33,10 +32,18 @@ func (server *Server) scanVal(fieldName string) (err error) {
 	field := elem.FieldByName(fieldName)
 	switch field.Type().String() {
 	case "int":
-		utils.Info(fieldName + deftVal(strconv.FormatInt(field.Int(), 10)) + ":")
-		var ipt int
-		if _, err = fmt.Scanln(&ipt); err == nil {
-			field.SetInt(int64(ipt))
+		prompt := utils.Colored(fieldName+deftVal(strconv.FormatInt(field.Int(), 10))+":", utils.ColorGreen)
+		iptStr, err := utils.ReadLine(prompt)
+		if err != nil {
+			if err == io.EOF || err.Error() == "Interrupt" {
+				return io.EOF
+			}
+			return nil
+		}
+		if iptStr != "" {
+			if ipt, err := strconv.Atoi(iptStr); err == nil {
+				field.SetInt(int64(ipt))
+			}
 		}
 	case "string":
 		// 如果是 Key 字段且 Method 为 key，尝试自动关联私钥
@@ -49,21 +56,23 @@ func (server *Server) scanVal(fieldName string) (err error) {
 			}
 		}
 
-		utils.Info(fieldName + deftVal(field.String()) + ":")
-		var ipt string
-		if _, err = fmt.Scanln(&ipt); err == nil {
-			field.SetString(ipt)
-		}
-	}
-
-	if err != nil {
-		if err == io.EOF {
-			return err
+		prompt := utils.Colored(fieldName+deftVal(field.String())+":", utils.ColorGreen)
+		var iptStr string
+		if fieldName == "Password" {
+			iptStr, err = utils.ReadPassword(prompt)
+		} else {
+			iptStr, err = utils.ReadLine(prompt)
 		}
 
-		// 允许输入空行
-		if err.Error() == "unexpected newline" {
+		if err != nil {
+			if err == io.EOF || err.Error() == "Interrupt" {
+				return io.EOF
+			}
 			return nil
+		}
+
+		if iptStr != "" {
+			field.SetString(iptStr)
 		}
 	}
 

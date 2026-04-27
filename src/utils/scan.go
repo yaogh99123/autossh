@@ -1,13 +1,50 @@
 package utils
 
 import (
-	"bufio"
-	"os"
+	"fmt"
+	"strings"
+
+	"github.com/chzyer/readline"
 )
 
-// GO自带的fmt.Scanln将空格也当作结束符，若需要读取含有空格的句子请使用该方法
+// ReadLine 统一提供带有退格、历史记录支持的终端读取，避免终端乱码
+func ReadLine(prompt string) (string, error) {
+	rl, err := readline.New(prompt)
+	if err != nil {
+		return "", err
+	}
+	defer rl.Close()
+
+	line, err := rl.Readline()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(line), nil
+}
+
+// ReadPassword 统一读取密码，提供掩码保护
+func ReadPassword(prompt string) (string, error) {
+	rl, err := readline.New(prompt)
+	if err != nil {
+		return "", err
+	}
+	defer rl.Close()
+
+	cfg := rl.GenPasswordConfig()
+	cfg.MaskRune = '*'
+	b, err := rl.ReadPasswordWithConfig(cfg)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(b)), nil
+}
+
+// Scanln 保持对老代码的兼容，但底层改用原生的 readline
 func Scanln(a *string) {
-	reader := bufio.NewReader(os.Stdin)
-	data, _, _ := reader.ReadLine()
-	*a = string(data)
+	line, err := ReadLine("")
+	if err != nil {
+		fmt.Println("读取输入失败:", err)
+		return
+	}
+	*a = line
 }
