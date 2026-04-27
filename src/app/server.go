@@ -17,16 +17,27 @@ import (
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/net/proxy"
+	"gopkg.in/yaml.v3"
 )
+
+type QuotedString string
+
+func (s QuotedString) MarshalYAML() (interface{}, error) {
+	return &yaml.Node{
+		Kind:  yaml.ScalarNode,
+		Style: yaml.DoubleQuotedStyle,
+		Value: string(s),
+	}, nil
+}
 
 type Server struct {
 	Name     string                 `json:"name" yaml:"name"`
 	Ip       string                 `json:"ip" yaml:"ip"`
 	Port     int                    `json:"port" yaml:"port"`
 	User     string                 `json:"user" yaml:"user"`
-	Password string                 `json:"password" yaml:"password"`
+	Password QuotedString           `json:"password" yaml:"password"`
 	Method   string                 `json:"method" yaml:"method"`
-	Key      string                 `json:"key" yaml:"key"`
+	Key      QuotedString           `json:"key" yaml:"key"`
 	Options  map[string]interface{} `json:"options" yaml:"options"`
 	Alias    string                 `json:"alias" yaml:"alias"`
 	NoProxy  bool                   `json:"no_proxy" yaml:"no_proxy"`
@@ -334,7 +345,7 @@ func parseAuthMethods(server *Server) ([]ssh.AuthMethod, error) {
 
 	switch strings.ToLower(server.Method) {
 	case "password":
-		sshs = append(sshs, ssh.Password(server.Password))
+		sshs = append(sshs, ssh.Password(string(server.Password)))
 		break
 
 	case "key":
@@ -347,7 +358,7 @@ func parseAuthMethods(server *Server) ([]ssh.AuthMethod, error) {
 
 		// 默认以password方式
 	default:
-		sshs = append(sshs, ssh.Password(server.Password))
+		sshs = append(sshs, ssh.Password(string(server.Password)))
 	}
 
 	return sshs, nil
@@ -358,9 +369,10 @@ func pemKey(server *Server) (ssh.AuthMethod, error) {
 	if server.Key == "" {
 		server.Key = "~/.ssh/id_rsa"
 	}
-	server.Key, _ = utils.ParsePath(server.Key)
+	keyPath, _ := utils.ParsePath(string(server.Key))
+	server.Key = QuotedString(keyPath)
 
-	pemBytes, err := ioutil.ReadFile(server.Key)
+	pemBytes, err := ioutil.ReadFile(string(server.Key))
 	if err != nil {
 		return nil, err
 	}

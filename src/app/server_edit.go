@@ -56,7 +56,7 @@ func (server *Server) scanVal(fieldName string) (err error) {
 				field.SetInt(int64(ipt))
 			}
 		}
-	case "string":
+	case "string", "app.QuotedString":
 		// 根据用户要求：Password 不为空则 Method 自动为 password，否则为 key
 		if fieldName == "Method" {
 			if server.Password != "" {
