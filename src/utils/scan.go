@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -22,9 +23,9 @@ func ReadLine(prompt string) (string, error) {
 	return strings.TrimSpace(line), nil
 }
 
-// ReadPassword 统一读取密码，提供掩码保护
 func ReadPassword(prompt string) (string, error) {
-	rl, err := readline.New(prompt)
+	fmt.Println(prompt)
+	rl, err := readline.New("")
 	if err != nil {
 		return "", err
 	}
@@ -43,6 +44,10 @@ func ReadPassword(prompt string) (string, error) {
 func Scanln(a *string) {
 	line, err := ReadLine("")
 	if err != nil {
+		if err.Error() == "Interrupt" || err.Error() == "EOF" {
+			fmt.Println()
+			os.Exit(0)
+		}
 		fmt.Println("读取输入失败:", err)
 		return
 	}

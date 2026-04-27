@@ -46,6 +46,22 @@ func (server *Server) scanVal(fieldName string) (err error) {
 			}
 		}
 	case "string":
+		// 根据用户要求：Password 不为空则 Method 自动为 password，否则为 key
+		if fieldName == "Method" {
+			if server.Password != "" {
+				server.Method = "example-password"
+			} else {
+				server.Method = "key"
+			}
+			return nil
+		}
+
+		// 如果 Password 不为空，Key 强制为空且不参与输入
+		if fieldName == "Key" && server.Password != "" {
+			server.Key = ""
+			return nil
+		}
+
 		// 如果是 Key 字段且 Method 为 key，尝试自动关联私钥
 		if fieldName == "Key" && server.Method == "key" {
 			selectedKey, _ := pickSSHKey()
