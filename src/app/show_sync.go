@@ -69,7 +69,7 @@ func showSync(configFile string) {
 }
 
 func printSourceSize(srv *Server, src string) {
-	fmt.Printf("Calculating target size... ")
+	utils.Blueln("Calculating target size... ")
 
 	var sizeStr string
 	// 如果 src 包含 @，说明是远程源 (user@ip:path)
@@ -131,7 +131,7 @@ func printSourceSize(srv *Server, src string) {
 	if sizeStr != "" {
 		utils.Blueln(fmt.Sprintf("Detected target (size: %s), using rsync for transfer...", sizeStr))
 	} else {
-		utils.Yellowln("Size calculation timeout, starting transfer directly...")
+		utils.Blueln("Size calculation It's too big, starting transfer directly...")
 	}
 }
 
@@ -140,23 +140,22 @@ func runRsync(srv *Server, args []string) {
 
 	// 构建 SSH 参数
 	sshOptions := []string{
-		fmt.Sprintf("-p %d", srv.Port),
-		"-o StrictHostKeyChecking=no",
-		"-o UserKnownHostsFile=/dev/null",
+		fmt.Sprintf("-p%d", srv.Port),
+		"-o", "StrictHostKeyChecking=no",
+		"-o", "UserKnownHostsFile=/dev/null",
 	}
 
 	if srv.Method == "key" {
 		keyPath, _ := utils.ParsePath(string(srv.Key))
-		sshOptions = append(sshOptions, fmt.Sprintf("-i %s", keyPath))
+		sshOptions = append(sshOptions, "-i", keyPath)
 	}
 
-	// 使用 --rsh 代替 -e，这样参数传递更稳定
-	rshCmd := fmt.Sprintf("ssh %s", strings.Join(sshOptions, " "))
+	sshCmd := "ssh " + strings.Join(sshOptions, " ")
 	rsyncArgs := []string{
 		"-az",
 		"--partial",
 		"--info=progress2",
-		"--rsh=" + rshCmd,
+		"-e", sshCmd,
 	}
 	rsyncArgs = append(rsyncArgs, args...)
 
