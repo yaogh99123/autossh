@@ -38,7 +38,7 @@ func scanInput(cfg *Config) (loop bool, clear bool, reload bool) {
 		{
 			server := cfg.serverIndex[cmd].server
 			utils.Infoln("\n"+i18n.T("search_selected", server.Name))
-			err := server.Connect()
+			err := server.Connect(cfg.Log)
 			if err != nil {
 				utils.Logger.Error("server connect error ", err)
 				utils.Errorln(err)

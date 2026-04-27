@@ -112,7 +112,7 @@ func handleSearch(cfg *Config, args []string) error {
 				}
 				if target != nil {
 					utils.Infoln("\n"+i18n.T("search_selected", target.Name))
-					return target.Connect()
+					return target.Connect(cfg.Log)
 				}
 			}
 		}

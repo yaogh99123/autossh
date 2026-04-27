@@ -30,7 +30,7 @@ type Server struct {
 	Options  map[string]interface{} `json:"options" yaml:"options"`
 	Alias    string                 `json:"alias" yaml:"alias"`
 	NoProxy  bool                   `json:"no_proxy" yaml:"no_proxy"`
-	Log      ServerLog              `json:"log" yaml:"log"`
+	Log      *ServerLog             `json:"log,omitempty" yaml:"log,omitempty"`
 
 	termWidth  int
 	termHeight int
@@ -178,7 +178,7 @@ func (server *Server) GetSftpClient() (*sftp.Client, error) {
 }
 
 // 执行远程连接
-func (server *Server) Connect() error {
+func (server *Server) Connect(globalLog ServerLog) error {
 	client, err := server.GetSshClient()
 	if err != nil {
 		if utils.ErrorAssert(err, "ssh: unable to authenticate") {
@@ -206,7 +206,7 @@ func (server *Server) Connect() error {
 	stopKeepAliveLoop := server.startKeepAliveLoop(session)
 	defer close(stopKeepAliveLoop)
 
-	err = server.stdIO(session)
+	err = server.stdIO(session, globalLog)
 	if err != nil {
 		return err
 	}
@@ -248,11 +248,16 @@ func (server *Server) Connect() error {
 }
 
 // 重定向标准输入输出
-func (server *Server) stdIO(session *ssh.Session) error {
+func (server *Server) stdIO(session *ssh.Session, globalLog ServerLog) error {
 	session.Stderr = os.Stderr
 	session.Stdin = os.Stdin
 
-	if server.Log.Enable {
+	logConfig := globalLog
+	if server.Log != nil {
+		logConfig = *server.Log
+	}
+
+	if logConfig.Enable {
 		ch, err := session.StdoutPipe()
 		if err != nil {
 			return err
@@ -260,13 +265,13 @@ func (server *Server) stdIO(session *ssh.Session) error {
 
 		go func() {
 			flag := os.O_RDWR | os.O_CREATE
-			switch server.Log.Mode {
+			switch logConfig.Mode {
 			case LogModeAppend:
 				flag = flag | os.O_APPEND
 			case LogModeCover:
 			}
 
-			f, err := os.OpenFile(server.formatLogFilename(server.Log.Filename), flag, 0644)
+			f, err := os.OpenFile(server.formatLogFilename(logConfig.Filename), flag, 0644)
 			if err != nil {
 				utils.Logger.Error("Open file fail ", err)
 				return
