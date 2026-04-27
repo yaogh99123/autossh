@@ -38,9 +38,10 @@ func showServers(configFile string) {
 
 // 显示服务
 func show(cfg *Config) {
-	maxlen := separatorLength(*cfg)
 	flagWidth, nameWidth := calculateWidths(cfg)
+	maxlen := separatorLength(*cfg, flagWidth, nameWidth)
 	utils.Blueln(utils.FormatSeparator(i18n.T("welcome_autossh"), "=", maxlen))
+	utils.Logln()
 
 	count := 0
 	limit := 8
@@ -70,6 +71,7 @@ func show(cfg *Config) {
 
 			utils.Logln()
 			utils.Yellowln(utils.FormatSeparator(" "+group.GroupName+" "+collapseNotice+" ", "_", maxlen))
+			utils.Logln()
 			if !group.Collapse {
 				for i, server := range group.Servers {
 					if !cfg.ShowAll && count >= limit {
@@ -114,12 +116,14 @@ func show(cfg *Config) {
 }
 
 // 计算分隔符长度
-func separatorLength(cfg Config) int {
-	maxlength := 60
+func separatorLength(cfg Config, flagWidth, nameWidth int) int {
+	// 基础宽度：1(前空格) + flagWidth + 2(间距) + nameWidth + 2(间距) + 35(IP部分) + 2(间距) + 10(认证方式)
+	maxlength := flagWidth + nameWidth + 52
+
 	for _, group := range cfg.Groups {
-		length := utils.ZhLen(group.GroupName)
+		length := utils.ZhLen(group.GroupName) + 20 // 组名预留空间
 		if length > maxlength {
-			maxlength = length + 10
+			maxlength = length
 		}
 	}
 
