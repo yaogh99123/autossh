@@ -16,6 +16,7 @@ Commands:
   cp [-r] source target    复制传输。
   upload/up [-r] [-j 并发数] local server:remote    简化的本地上传功能（支持多线程）。
   down [-r] [-j 并发数] server:remote local    从服务器下载到本地（支持多线程）。
+  sync [alias]:[remote] [local]  使用 rsync 同步。
   ${ServerNum}             使用编号登录指定服务器。
   ${ServerAlias}           使用别名登录指定服务器。
   upgrade                  检测并更新到最新版本。
@@ -102,4 +103,5 @@ Commands:
 	"app_flag_c":                "指定配置文件路径",
 	"app_flag_v":                "版本信息",
 	"app_flag_h":                "帮助信息",
+	"sync_usage":                "用法: autossh sync <服务器别名:远程路径> <本地路径>  (或反之)\n示例: autossh sync vps:/tmp/ ./local_dir/",
 }

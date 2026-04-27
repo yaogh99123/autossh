@@ -20,6 +20,7 @@ var (
 	upload  bool
 	up      bool
 	down    bool
+	rsyncMode bool
 )
 
 func init() {
@@ -52,6 +53,8 @@ func init() {
 			up = true
 		case "down":
 			down = true
+		case "sync":
+			rsyncMode = true
 		default:
 			defaultServer = arg
 		}
@@ -79,6 +82,8 @@ func Run() {
 		showUpload(c)
 	} else if down {
 		showDownload(c)
+	} else if rsyncMode {
+		showSync(c)
 	} else {
 		showServers(c)
 	}

@@ -16,6 +16,7 @@ Commands:
   cp [-r] source target    Copy and transfer.
   upload/up [-r] [-j concurrency] local server:remote    Simplified local upload (multi-thread supported).
   down [-r] [-j concurrency] server:remote local    Download from server to local (multi-thread supported).
+  sync [alias]:[remote] [local]  Sync files using rsync.
   ${ServerNum}             Login to specific server using number.
   ${ServerAlias}           Login to specific server using alias.
   upgrade                  Check and upgrade to the latest version.
@@ -102,4 +103,5 @@ Commands:
 	"app_flag_c":                "Specify configuration file path",
 	"app_flag_v":                "Version information",
 	"app_flag_h":                "Help information",
+	"sync_usage":                "Usage: autossh sync <alias:remote_path> <local_path>  (or vice versa)\nExample: autossh sync vps:/tmp/ ./local_dir/",
 }
