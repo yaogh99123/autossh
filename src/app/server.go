@@ -80,10 +80,20 @@ func (server *Server) FormatPrint(flag string, ShowDetail bool, flagWidth, nameW
 
 	namePart := utils.AppendRight(server.Name, " ", nameWidth)
 
+	method := server.Method
+	if method == "" {
+		method = "password"
+	}
+	methodPart := utils.Colored("["+method+"]", utils.ColorYellow)
+
 	if ShowDetail {
-		return " " + coloredFlag + "  " + namePart + "  [" + server.User + "@" + server.Ip + "]"
+		info := "[" + server.User + "@" + server.Ip + "]"
+		infoPart := utils.AppendRight(info, " ", 35) // 补齐到 35 字符宽度
+		return " " + coloredFlag + "  " + namePart + "  " + infoPart + "  " + methodPart
 	} else {
-		return " " + coloredFlag + "  " + namePart
+		// 非详细模式下，我们也补齐 35 个空位，确保 Method 依然对齐
+		emptyPart := utils.AppendRight("", " ", 35)
+		return " " + coloredFlag + "  " + namePart + "  " + emptyPart + "  " + methodPart
 	}
 }
 
