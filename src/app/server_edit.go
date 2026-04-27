@@ -9,6 +9,17 @@ import (
 
 // 编辑
 func (server *Server) Edit() error {
+	// 初始化 Options 默认值
+	if server.Options == nil {
+		server.Options = make(map[string]interface{})
+	}
+	if _, ok := server.Options["ServerAliveInterval"]; !ok {
+		server.Options["ServerAliveInterval"] = 20
+	}
+	if _, ok := server.Options["TERM"]; !ok {
+		server.Options["TERM"] = "xterm-256color"
+	}
+
 	keys := []string{"Name", "Ip", "Port", "User", "Password", "Method", "Key", "Alias"}
 	for _, key := range keys {
 		if err := server.scanVal(key); err != nil {
